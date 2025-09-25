@@ -62,7 +62,7 @@ def create_tables(cursor, conn):
 
 app = Flask(__name__)
 
-@app.route('/companies', methods=['POST'])
+@app.route('/company', methods=['POST'])
 def create_company():
     post_data = request.form if request.form else request.get_json()
 
