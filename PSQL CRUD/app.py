@@ -388,7 +388,10 @@ def read_company_by_id(company_id):
 @app.route('/category/<category_id>', methods=['GET'])
 def read_category_by_id(category_id):
     result = cursor.execute("""
-    SELECT * FROM Categories JOIN ProductsCategoriesXref ON category_id = category_id JOIN Products ON product_id = product_id WHERE category_id = %s;
+    SELECT * FROM Categories 
+    JOIN ProductsCategoriesXref ON Categories.category_id = ProductsCategoriesXref.category_id 
+    JOIN Products ON Categories.product_id = ProductsCategoriesXref.product_id 
+    WHERE category_id = %s;
     """, (category_id,))
     
     result = cursor.fetchall()
@@ -418,7 +421,11 @@ def read_category_by_id(category_id):
 @app.route('/product/<product_id>', methods=['GET'])
 def read_product_by_id(product_id):
     result = cursor.execute("""
-        SELECT * FROM Products JOIN Warranties ON product_id = product_id JOIN ProductsCategoriesXref ON product_id = product _id JOIN Categories ON category_id = category_id WHERE product_id = %s;
+        SELECT * FROM Products 
+        JOIN Warranties ON Products.product_id = Warranties.product_id 
+        JOIN ProductsCategoriesXref ON Products.product_id = ProductsCategoriesXref.product _id 
+        JOIN Categories ON ProductsCategoriesXref.category_id = Categories.category_id 
+        WHERE product_id = %s;
 
     """,
         (product_id,))
