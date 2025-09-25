@@ -1,0 +1,28 @@
+CREATE
+- INSERT INTO Companies (company_name) VALUES (%s);
+- INSERT INTO Categories (category_name) VALUES (%s);
+- INSERT INTO Products (product_name, company_id, description, price) VALUES (%s, %s, %s, %s);
+- INSERT INTO Warranties (warranty_months, product_id) VALUES (%s, %s);
+- INSERT INTO ProductsCategoriesXref (product_id, category_id) VALUES (%s, %s);
+READ
+- SELECT * FROM Companies;
+- SELECT * FROM Categories;
+- SELECT * FROM Products;
+- SELECT * FROM Warranties;
+- SELECT * FROM Products WHERE active = True;
+- SELECT * FROM Products WHERE company_id = %s;
+- SELECT * FROM Companies WHERE company_id = %s;
+- SELECT * FROM Categories JOIN ProductsCategoriesXref ON category_id = category_id JOIN Products ON product_id = product_id WHERE category_id = %s;
+- SELECT * FROM Products JOIN Warranties ON product_id = product_id JOIN ProductsCategoriesXref ON product_id = product _id JOIN Categories ON category_id = category_id WHERE product_id = %s;
+- SELECT * FROM warranty WHERE warranty_id = %s;
+UPDATE
+- UPDATE Companies SET %s WHERE company_id = %s;
+- UPDATE Categories SET %s WHERE category_id = %s;
+- UPDATE Products SET %s WHERE product_id = %s;
+- UPDATE Warranties SET %s WHERE warranty_id = %s;
+- UPDATE ProductsCategoriesXref SET %s WHERE product_id = %s AND category_id = %s;
+DELETE
+- DELETE FROM Products WHERE product_id = %s; DELETE FROM Warranties WHERE product_id = %s; DELETE FROM ProductsCategoriesXref WHERE product_id = %s;
+- DELETE FROM Categories WHERE category_id = %s; DELETE FROM ProductsCategoriesXref WHERE category_id = %s; 
+- DELETE FROM Companies WHERE company_id = %s; DELETE FROM Products WHERE company_id = %s; 
+- DELETE FROM Warranties WHERE warranty_id = %s;
