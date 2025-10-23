@@ -1,3 +1,8 @@
 Flask\ CRUD/.env
 Flask\ CRUD/Pipfile.lock
 Practice/.env
+Practice/Pipfile.lock
+Psycopg2\ CRUD/.env
+Psycopg2\ CRUD/Pipfile.lock
+SQLAlchemy/.env
+SQLAlchemy/Pipfile.lock

@@ -1,17 +1,23 @@
-from flask import Flask, jsonify, request
-import psycopg2
+from flask import Flask
 import os
 
 from db import *
+import routes
+from models.category import Categories
+from models.company import Companies
+from models.product import Products
+from models.warranty import Warranties
 
 flask_host = os.environ.get("FLASK_HOST")
-flask_port = os.environ.get("FLASK_POST")
+flask_port = os.environ.get("FLASK_PORT")
 
 database_scheme = os.environ.get("DATABASE_SCHEME")
 database_user = os.environ.get("DATABASE_USER")
 database_address = os.environ.get("DATABASE_ADDRESS")
 database_port = os.environ.get("DATABASE_PORT")
 database_name = os.environ.get("DATABASE_NAME")
+
+
 
 app = Flask(__name__)
 
@@ -20,12 +26,18 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 init_db(app, db)
 
+app.register_blueprint(routes.company)
+app.register_blueprint(routes.category)
+app.register_blueprint(routes.product)
+app.register_blueprint(routes.warranty)
+
 def create_tables():
     with app.app_context():
         print("Creating tables...")
         db.create_all()
         print("Tables created successfully")
 
+create_tables()
+
 if __name__ == '__main__':
-    create_tables()
     app.run(host=flask_host, port=flask_port)
