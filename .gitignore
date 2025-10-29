@@ -6,3 +6,5 @@ Psycopg2\ CRUD/.env
 Psycopg2\ CRUD/Pipfile.lock
 SQLAlchemy/.env
 SQLAlchemy/Pipfile.lock
+Wizarding\ Library\ Management/.env
+Wizarding\ Library\ Management/Pipfile.lock
