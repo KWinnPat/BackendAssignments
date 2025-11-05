@@ -27,7 +27,7 @@ def create_tables(cursor, conn):
         CREATE TABLE IF NOT EXISTS Warranties (
         warranty_id SERIAL PRIMARY KEY,
         warranty_months INT NOT NULL,
-        product_id INT,
+        product_id INT
         );
     """)
     conn.commit()
@@ -330,7 +330,7 @@ def read_active_products():
 
     return jsonify({"message": "products found", "results": record_list}), 200
 
-@app.route('/products/<company_id>', methods=['GET'])
+@app.route('/products/company/<company_id>', methods=['GET'])
 def read_products_by_company_id(company_id):
     result = cursor.execute("""
         SELECT * FROM Products
@@ -361,6 +361,7 @@ def read_products_by_company_id(company_id):
 
 @app.route('/company/<company_id>', methods=['GET'])
 def read_company_by_id(company_id):
+
     result = cursor.execute("""
         SELECT * FROM Companies
             WHERE company_id = %s;
@@ -372,18 +373,14 @@ def read_company_by_id(company_id):
     if not result:
         return jsonify({"message": "no company found"}), 404
     
-    record_list = []
 
-    for record in result:
-        record = {
-            'company_id': record[0],
-            'company_name': record[1],
-            'active': record[2]
+    new_record = {
+            'company_id': result[0],
+            'company_name': result[1],
+            'active': result[2]
         }
-        
-        record_list.append(record)
 
-    return jsonify({"message": "company found", "results": record_list}), 200
+    return jsonify({"message": "company found", "results": new_record}), 200
 
 @app.route('/category/<category_id>', methods=['GET'])
 def read_category_by_id(category_id):
@@ -423,9 +420,9 @@ def read_product_by_id(product_id):
     result = cursor.execute("""
         SELECT * FROM Products 
         JOIN Warranties ON Products.product_id = Warranties.product_id 
-        JOIN ProductsCategoriesXref ON Products.product_id = ProductsCategoriesXref.product _id 
+        JOIN ProductsCategoriesXref ON Products.product_id = ProductsCategoriesXref.product_id 
         JOIN Categories ON ProductsCategoriesXref.category_id = Categories.category_id 
-        WHERE product_id = %s;
+        WHERE Products.product_id = %s;
 
     """,
         (product_id,))
@@ -469,18 +466,14 @@ def read_warranty_by_id(warranty_id):
     if not result:
         return jsonify({"message": "no warranty found"}), 404
     
-    record_list = []
-
-    for record in result:
-        record = {
-            'warranty_id': record[0],
-            'warranty_months': record[1],
-            'product_id': record[2]
+    record = {
+            'warranty_id': result[0],
+            'warranty_months': result[1],
+            'product_id': result[2]
         }
-        
-        record_list.append(record)
 
-    return jsonify({"message": "warranty found", "results": record_list}), 200
+
+    return jsonify({"message": "warranty found", "results": record}), 200
 
 
 
@@ -499,11 +492,18 @@ def update_company(company_id):
     if not record_exists:
         return jsonify({"message": "no company found"}), 404
     
-    cursor.execute("""
-        UPDATE Companies SET %s WHERE company_id = %s;
-        """,
-        (updated_fields, company_id)
-    )
+    set_clauses = []
+    values = []
+
+    for field, value in updated_fields.items():
+                set_clauses.append(f"{field} = %s")
+                values.append(value)
+
+    values.append(company_id)
+
+    query = f"UPDATE Companies SET {', '.join(set_clauses)} WHERE company_id = %s;"
+
+    cursor.execute(query, values)
 
     conn.commit()
     return jsonify({"message": "company updated"}), 200
@@ -524,11 +524,18 @@ def update_category(category_id):
     if not record_exists:
         return jsonify({"message": "no category found"}), 404
     
-    cursor.execute("""
-        UPDATE Categories SET %s WHERE category_id = %s;
-        """,
-        (updated_fields, category_id)
-    )
+    set_clauses = []
+    values = []
+
+    for field, value in updated_fields.items():
+                set_clauses.append(f"{field} = %s")
+                values.append(value)
+
+    values.append(category_id)
+
+    query = f"UPDATE Categories SET {', '.join(set_clauses)} WHERE category_id = %s;"
+
+    cursor.execute(query, values)
 
     conn.commit()
     return jsonify({"message": "category updated"}), 200
@@ -548,11 +555,18 @@ def update_product(product_id):
     if not record_exists:
         return jsonify({"message": "no product found"}), 404
     
-    cursor.execute("""
-        UPDATE Products SET %s WHERE product_id = %s;
-        """,
-        (updated_fields, product_id)
-    )
+    set_clauses = []
+    values = []
+
+    for field, value in updated_fields.items():
+                set_clauses.append(f"{field} = %s")
+                values.append(value)
+
+    values.append(product_id)
+
+    query = f"UPDATE Products SET {', '.join(set_clauses)} WHERE product_id = %s;"
+
+    cursor.execute(query, values)
 
     conn.commit()
     return jsonify({"message": "product updated"}), 200
@@ -572,11 +586,18 @@ def update_warranty(warranty_id):
     if not record_exists:
         return jsonify({"message": "no warranty found"}), 404
     
-    cursor.execute("""
-        UPDATE Warranties SET %s WHERE warranty_id = %s;
-        """,
-        (updated_fields, warranty_id)
-    )
+    set_clauses = []
+    values = []
+
+    for field, value in updated_fields.items():
+                set_clauses.append(f"{field} = %s")
+                values.append(value)
+
+    values.append(warranty_id)
+
+    query = f"UPDATE Warranties SET {', '.join(set_clauses)} WHERE warranty_id = %s;"
+
+    cursor.execute(query, values)
 
     conn.commit()
     return jsonify({"message": "warranty updated"}), 200
@@ -596,11 +617,20 @@ def update_product_category(product_id, category_id):
     if not record_exists:
         return jsonify({"message": "no product category found"}), 404
     
-    cursor.execute("""
-        UPDATE ProductsCategoriesXref SET %s WHERE product_id = %s AND category_id = %s;
-        """,
-        (updated_fields, product_id, category_id)
-    )
+    set_clauses = []
+    values = []
+
+    for field, value in updated_fields.items():
+                set_clauses.append(f"{field} = %s")
+                values.append(value)
+
+    values.append(product_id)
+    values.append(category_id)
+
+    query = f"UPDATE ProductsCategoriesXref SET %s WHERE product_id = %s AND category_id = %s;"
+
+    cursor.execute(query, values)
+    
 
     conn.commit()
     return jsonify({"message": "product category updated"}), 200
@@ -672,7 +702,7 @@ def delete_company(company_id):
         DELETE FROM Companies WHERE company_id = %s; 
         DELETE FROM Products WHERE company_id = %s; 
         """,
-        (company_id,)
+        (company_id, company_id,)
     )
 
     conn.commit()
@@ -701,5 +731,5 @@ def delete_warranty(warranty_id):
     return jsonify({"message": "warranty deleted"}), 200
 
 if __name__ == '__main__':
-    create_tables()
+    create_tables(cursor, conn)
     app.run(port='8086', host='0.0.0.0')
