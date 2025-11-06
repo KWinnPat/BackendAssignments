@@ -20,10 +20,12 @@ class Companies(db.Model):
 
 class CompaniesSchema(ma.Schema):
     class Meta:
-        fields = ['company_id', 'company_name']
+        fields = ['company_id', 'company_name', 'products']
 
     company_id = ma.fields.UUID()
     company_name = ma.fields.String(required=True)
+
+    products = ma.fields.Nested("ProductsSchema", many=True, exclude=['company'])
     
 
 company_schema = CompaniesSchema()

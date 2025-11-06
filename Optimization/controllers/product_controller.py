@@ -55,13 +55,14 @@ def get_product_by_id(product_id):
     return jsonify({"results": product_schema.dump(query)}), 200
 
 def get_products_by_company_id(company_id):
+
     query = db.session.query(Products).filter(Products.company_id == company_id).all()
     if not query:
         return jsonify({"message": "products not found"}), 404
     return jsonify({"results": products_schema.dump(query)}), 200
 
 def get_all_active_products():
-    query = db.session.query(Products).filter(Products.is_active == True).all()
+    query = db.session.query(Products).filter(Products.active == True).all()
     return jsonify({"results": products_schema.dump(query)}), 200
 
 # UPDATE
