@@ -8,3 +8,9 @@ SQLAlchemy/.env
 SQLAlchemy/Pipfile.lock
 Wizarding\ Library\ Management/.env
 Wizarding\ Library\ Management/Pipfile.lock
+Optimization/.env
+Optimization/Pipfile.lock
+Fellowship\ Management\ Database/.env
+Fellowship\ Management\ Database/Pipfile.lock
+Codealong/.env
+Codealong/Pipfile.lock

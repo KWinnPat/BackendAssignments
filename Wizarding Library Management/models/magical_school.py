@@ -12,8 +12,6 @@ class Magical_Schools(db.Model):
     founded_year = db.Column(db.Integer())
     headmaster = db.Column(db.String())
 
-    wizards = db.relationship('Wizards',  back_populates='school', cascade="all, delete")
-
     def __init__(self, school_name, location, founded_year, headmaster):
         self.school_name = school_name
         self.location = location

@@ -15,8 +15,6 @@ class Wizards(db.Model):
 
     school_id = db.Column(UUID(as_uuid=True), db.ForeignKey("Magical_Schools.school_id", ondelete='CASCADE'), nullable=False)
     
-    school = db.relationship("Magical_Schools", back_populates='wizards')
-
     def __init__(self, wizard_name, school_id, house, year_enrolled, magical_power_level, active=True):
         self.wizard_name = wizard_name
         self.school_id = school_id

@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from db import db
 from models.book import Books
+from models.magical_school import Magical_Schools
 
 
 # CREATE
@@ -31,17 +32,27 @@ def add_book():
         return jsonify({"message": "unable to create record"}), 400
     
     query = db.session.query(Books).filter(Books.title == values['title']).first()
+    school = db.session.query(Magical_Schools).filter(Magical_Schools.school_id == query.school_id).first()
+
+    school_dict = {
+        "school_id": school.school_id,
+        "school_name": school.school_name,
+        "location": school.location,
+        "founded_year": school.founded_year,
+        "headmaster": school.headmaster
+    }
 
     book = {
         "book_id": query.book_id,
         "title": query.title,
-        "school_id": query.school_id,
+        "school": school_dict,
         "author": query.author,
         "subject": query.subject,
         "rarity_level": query.rarity_level,
         "magical_properties": query.magical_properties,
         "available": query.available
     }
+
 
     return jsonify({"message": "book created", "result": book}), 200
 
@@ -55,10 +66,20 @@ def get_all_books():
     book_list = []
 
     for book in query:
+        school = db.session.query(Magical_Schools).filter(Magical_Schools.school_id == book.school_id).first()
+        
+        school_dict = {
+            "school_id": school.school_id,
+            "school_name": school.school_name,
+            "location": school.location,
+            "founded_year": school.founded_year,
+            "headmaster": school.headmaster
+        }
+    
         book_dict = {
             'book_id': book.book_id,
             'title': book.title,
-            'school_id': book.school_id,
+            'school': school_dict,
             'author': book.author,
             'subject': book.subject,
             'rarity_level': book.rarity_level,
@@ -78,10 +99,20 @@ def get_available_books():
     book_list = []
 
     for book in query:
+        school = db.session.query(Magical_Schools).filter(Magical_Schools.school_id == book.school_id).first()
+        
+        school_dict = {
+            "school_id": school.school_id,
+            "school_name": school.school_name,
+            "location": school.location,
+            "founded_year": school.founded_year,
+            "headmaster": school.headmaster
+        }
+    
         book_dict = {
             'book_id': book.book_id,
             'title': book.title,
-            'school_id': book.school_id,
+            'school': school_dict,
             'author': book.author,
             'subject': book.subject,
             'rarity_level': book.rarity_level,
@@ -114,11 +145,20 @@ def update_book_by_id(book_id):
         return jsonify({"message": "unable to update record"}), 400
 
     updated_book_query = db.session.query(Books).filter(Books.book_id == book_id).first()
+    school = db.session.query(Magical_Schools).filter(Magical_Schools.school_id == updated_book_query.school_id).first()
+        
+    school_dict = {
+            "school_id": school.school_id,
+            "school_name": school.school_name,
+            "location": school.location,
+            "founded_year": school.founded_year,
+            "headmaster": school.headmaster
+        }
 
     book = {
         'book_id': updated_book_query.book_id,
         'title': updated_book_query.title,
-        'school_id': updated_book_query.school_id,
+        'school': school_dict,
         'author': updated_book_query.author,
         'subject': updated_book_query.subject,
         'rarity_level': updated_book_query.rarity_level,
