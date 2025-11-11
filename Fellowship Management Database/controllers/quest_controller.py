@@ -75,3 +75,4 @@ def delete_quest_by_id(quest_id):
     except:
         db.session.rollback()
         return jsonify({"message": "unable to delete record"}), 400
+    return jsonify({"message": "quest deleted"}), 200

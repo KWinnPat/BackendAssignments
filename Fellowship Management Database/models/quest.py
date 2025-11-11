@@ -8,13 +8,13 @@ class Quests(db.Model):
     __tablename__ = "Quests"
 
     quest_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    location_id = db.Column(db.ForeignKey('Realms.realm_id', ondelete='SET NULL'), nullable=True)
+    location_id = db.Column(db.ForeignKey('Locations.location_id', ondelete='SET NULL'), nullable=True)
     quest_name = db.Column(db.String(), nullable=False, unique=True)
     difficulty = db.Column(db.String(), nullable=True)
     reward_gold = db.Column(db.Integer, nullable=True)
     is_completed = db.Column(db.Boolean, default=False)
 
-    location = db.relationship("Realms", foreign_keys='[Quests.location_id]', back_populates='quests')
+    location = db.relationship("Locations", foreign_keys='[Quests.location_id]', back_populates='quests_available')
     heroes = db.relationship("Heroes", secondary="HeroQuests", back_populates='quests')
 
     def __init__(self, location_id, quest_name, difficulty=None, reward_gold=None, is_completed=False):
@@ -37,7 +37,7 @@ class QuestsSchema(ma.Schema):
     reward_gold = ma.fields.Integer(allow_none=True)
     is_completed = ma.fields.Boolean() 
 
-    location = ma.fields.Nested("RealmsSchema", exclude=['quests'])
+    location = ma.fields.Nested("LocationsSchema", exclude=['quests_available'])
     heroes = ma.fields.Nested("HeroesSchema", many=True, exclude=['quests'])
 
 quest_schema = QuestsSchema()

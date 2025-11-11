@@ -11,15 +11,18 @@ class AuthToken(db.Model):
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('AppUsers.user_id'), nullable=False)
     expiration = db.Column(db.DateTime(), nullable=False)
 
+    user = db.relationship('AppUser', backpopulates='auth')
+
     def __init__(self, user_id, expiration):
         self.user_id = user_id
         self.expiration = expiration
 
 class AuthTokenSchema(ma.Schema):
     class Meta:
-        fields = ['auth_token_id', 'expiration']
+        fields = ['auth_token_id', 'expiration', 'user']
 
     auth_token_id = ma.fields.UUID()
     expiration = ma.fields.DateTime(required=True)
+    user = ma.fields.Nested('AppUserSchema', only=('user_id', 'email', 'first_name', 'last_name', 'role', 'active'))
 
 auth_token_schema = AuthTokenSchema()

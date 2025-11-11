@@ -94,3 +94,4 @@ def delete_hero_by_id(hero_id):
     except:
         db.session.rollback()
         return jsonify({"message": "unable to delete record"}), 400
+    return jsonify({"message": "hero deleted"}), 200

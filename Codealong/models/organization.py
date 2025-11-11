@@ -13,6 +13,8 @@ class Organization(db.Model):
     email = db.Column(db.String(), nullable=False, unique=True)
     active = db.Column(db.Boolean(), default=True)
 
+    users = db.relationship('AppUser', back_populates='org')
+
     def __init__(self, name, email, phone=None, active=True):
         self.name = name
         self.email = email
@@ -24,13 +26,14 @@ class Organization(db.Model):
     
 class OrganizationSchema(ma.Schema):
     class Meta:
-        fields = ['org_id', 'name', 'phone', 'email', 'active']
+        fields = ['org_id', 'name', 'phone', 'email', 'active', 'users']
 
     org_id = ma.fields.UUID()
     name = ma.fields.String(required=True)
     phone = ma.fields.String(allow_none=True)
     email = ma.fields.String(required=True)
     active = ma.fields.Boolean(required=True, dump_default=True)
+    users = ma.fields.Nested('AppUserSchema', many=True, exclude=('org'))
 
 organization_schema = OrganizationSchema()
 organizations_schema = OrganizationSchema(many=True)

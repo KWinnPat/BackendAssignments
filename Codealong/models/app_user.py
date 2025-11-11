@@ -17,6 +17,9 @@ class AppUser(db.Model):
     active = db.Column(db.Boolean(), default=True)
     role = db.Column(db.String(), nullable=False, default='user')
 
+    org = db.relationship('Organization', back_populates='users')
+    auth = db.relationship('AuthTokens', backpopulates='user')
+
     def __init__(self, org_id, first_name, last_name, email, password, phone=None, role='user'):
         self.org_id = org_id
         self.first_name = first_name
@@ -31,7 +34,7 @@ class AppUser(db.Model):
     
 class AppUserSchema(ma.Schema):
     class Meta:
-        fields = ['user_id', 'first_name', 'last_name', 'email', 'phone', 'active', 'role']
+        fields = ['user_id', 'first_name', 'last_name', 'email', 'phone', 'active', 'role', 'org']
 
     user_id = ma.fields.UUID()
     first_name = ma.fields.String(required=True)
@@ -40,6 +43,7 @@ class AppUserSchema(ma.Schema):
     phone = ma.fields.String(allow_none=True)
     active = ma.fields.Boolean(required=True, dump_default=True)
     role = ma.fields.String(required=True)
+    org = ma.fields.Nested('OrganizationSchema', exclude=('user'))
 
 app_user_schema = AppUserSchema()
 app_users_schema = AppUserSchema(many=True)
