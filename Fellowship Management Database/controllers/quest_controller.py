@@ -53,7 +53,7 @@ def set_quest_completed(quest_id):
     if not query:
         return jsonify({"message": "quest not found"}), 404
 
-    query.completed = True
+    query.is_completed = True
 
     try:
         db.session.commit()

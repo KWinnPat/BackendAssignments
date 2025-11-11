@@ -62,7 +62,7 @@ def get_hero_quests(hero_id):
     if not hero:
         return jsonify({"message": "hero not found"}), 404
 
-    quests = [assoc.quest for assoc in hero.quests]
+    quests = hero.quests
 
     from models.quest import quest_schema
     return jsonify({"results": [quest_schema.dump(quest) for quest in quests]}), 200

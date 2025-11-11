@@ -8,8 +8,8 @@ hero = Blueprint('hero', __name__)
 def create_hero():
     return controllers.create_hero()
 @hero.route('/hero-quest', methods=['POST'])
-def assign_quest_to_hero():
-    return controllers.assign_quest_to_hero()
+def create_hero_quest():
+    return controllers.create_hero_quest()
 @hero.route('/hero/<hero_id>', methods=['GET'])
 def get_hero(hero_id):
     return controllers.get_hero_by_id(hero_id)
