@@ -20,8 +20,8 @@ class Users(db.Model):
     company = db.relationship('Companies', back_populates='users')
     auth = db.relationship('AuthTokens', back_populates='user')
 
-    def __init__(self, org_id, first_name, last_name, email, password, phone=None, active=True, role='user'):
-        self.org_id = org_id
+    def __init__(self, company_id, first_name, last_name, email, password, phone=None, active=True, role='user'):
+        self.company_id = company_id
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
