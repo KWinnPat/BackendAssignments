@@ -4,16 +4,16 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from db import db
 
-class Organization(db.Model):
+class Organizations(db.Model):
     __tablename__ = "Organizations"
 
     org_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(), nullable=False, unique=True)
     phone = db.Column(db.String())
     email = db.Column(db.String(), nullable=False, unique=True)
-    active = db.Column(db.Boolean(), default=True)
+    active = db.Column(db.Boolean(), nullable=False, default=True)
 
-    users = db.relationship('AppUser', back_populates='org')
+    users = db.relationship('AppUsers', back_populates='org')
 
     def __init__(self, name, email, phone=None, active=True):
         self.name = name
@@ -22,7 +22,7 @@ class Organization(db.Model):
         self.active = active
 
     def new_org_obj():
-        return Organization('', '', None, True)
+        return Organizations('', '', None, True)
     
 class OrganizationSchema(ma.Schema):
     class Meta:
@@ -33,7 +33,8 @@ class OrganizationSchema(ma.Schema):
     phone = ma.fields.String(allow_none=True)
     email = ma.fields.String(required=True)
     active = ma.fields.Boolean(required=True, dump_default=True)
-    users = ma.fields.Nested('AppUserSchema', many=True, exclude=('org'))
 
-organization_schema = OrganizationSchema()
-organizations_schema = OrganizationSchema(many=True)
+    users = ma.fields.Nested('AppUserSchema', many=True, exclude=['org'])
+
+org_schema = OrganizationSchema()
+orgs_schema = OrganizationSchema(many=True)

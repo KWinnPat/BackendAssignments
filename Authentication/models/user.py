@@ -4,11 +4,11 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from db import db
 
-class AppUsers(db.Model):
-    __tablename__ = "AppUsers"
+class Users(db.Model):
+    __tablename__ = "Users"
 
     user_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    org_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Organizations.org_id'), nullable=False)
+    company_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Companies.company_id'), nullable=False)
     first_name = db.Column(db.String(), nullable=False)
     last_name = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False, unique=True)
@@ -17,7 +17,7 @@ class AppUsers(db.Model):
     active = db.Column(db.Boolean(), default=True)
     role = db.Column(db.String(), nullable=False, default='user')
 
-    org = db.relationship('Organizations', back_populates='users')
+    company = db.relationship('Companies', back_populates='users')
     auth = db.relationship('AuthTokens', back_populates='user')
 
     def __init__(self, org_id, first_name, last_name, email, password, phone=None, active=True, role='user'):
@@ -31,11 +31,11 @@ class AppUsers(db.Model):
         self.role = role
 
     def new_user_obj():
-        return AppUsers('', '', '', '', '', None, True, 'user')
+        return Users('', '', '', '', '', None, True, 'user')
     
-class AppUserSchema(ma.Schema):
+class UsersSchema(ma.Schema):
     class Meta:
-        fields = ['user_id', 'first_name', 'last_name', 'email', 'phone', 'active', 'role', 'org']
+        fields = ['user_id', 'first_name', 'last_name', 'email', 'phone', 'active', 'role', 'company']
 
     user_id = ma.fields.UUID()
     first_name = ma.fields.String(required=True)
@@ -44,7 +44,7 @@ class AppUserSchema(ma.Schema):
     phone = ma.fields.String(allow_none=True)
     active = ma.fields.Boolean(required=True, dump_default=True)
     role = ma.fields.String(required=True)
-    org = ma.fields.Nested('OrganizationSchema', exclude=['users'])
+    company = ma.fields.Nested('CompaniesSchema', exclude=['users'])
 
-app_user_schema = AppUserSchema()
-app_users_schema = AppUserSchema(many=True)
+user_schema = UsersSchema()
+users_schema = UsersSchema(many=True)

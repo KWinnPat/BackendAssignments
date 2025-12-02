@@ -14,3 +14,5 @@ Fellowship\ Management\ Database/.env
 Fellowship\ Management\ Database/Pipfile.lock
 Codealong/.env
 Codealong/Pipfile.lock
+Authentication/.env
+Authentication/Pipfile.lock

@@ -1,0 +1,13 @@
+from flask import jsonify, request
+
+from db import db
+from models.app_user import AppUsers, app_users_schema
+from lib.authenticate import authenticate
+
+@authenticate
+def get_users_by_search():
+    search_term = request.args.get('q').lower()
+
+    user_data = db.session.query(AppUsers).filter(db.or_(db.func.lower(AppUsers.first_name).contains(search_term), db.func.lower(AppUsers.last_name).contains(search_term), db.func.lower(AppUsers.email).contains(search_term))).order_by(AppUsers.last_name.asc()).all()
+    
+    return jsonify({"message": "users found", "result": app_users_schema.dump(user_data)}), 200
